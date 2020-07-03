@@ -12,6 +12,13 @@
     <artifactId>web-api</artifactId>
     <packaging>war</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.csangharsha</groupId>
+            <artifactId>liquibase</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     <build>
         <finalName>sf-movies</finalName>
         <plugins>

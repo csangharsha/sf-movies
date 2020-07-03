@@ -7,6 +7,9 @@ spring:
       ddl-auto: none
   profiles:
     active: @spring.profiles.active@
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/master.xml
 
 server:
   port: 8081
