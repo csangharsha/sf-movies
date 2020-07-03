@@ -3,6 +3,8 @@ package com.csangharsha.sf_movies.movies;
 import com.csangharsha.sf_movies.utils.Constant;
 import com.csangharsha.sf_movies.utils.geocoding.GeoCoding;
 import com.csangharsha.sf_movies.utils.geocoding.GeoCodingUtils;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +34,16 @@ public class MovieResource {
     @Autowired
     private Environment env;
 
+    @ApiOperation(
+            value = "Create Movie Records",
+            notes = "Create a Movie that was filmed in San Francisco",
+            response = MovieDto.class
+    )
     @PostMapping
-    public ResponseEntity<MovieDto> create(@RequestBody MovieDto dto) throws URISyntaxException {
+    public ResponseEntity<MovieDto> create(
+            @ApiParam(value = "Movie Atrributes that needs to be inserted. Dont send id attribute. Also locations is required and should not be null.", required = true)
+            @RequestBody MovieDto dto
+    ) throws URISyntaxException {
         if (dto.getId() != null) {
             return ResponseEntity.badRequest().build();
         }
