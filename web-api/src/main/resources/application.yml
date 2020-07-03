@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: sf-movies
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  profiles:
+    active: @spring.profiles.active@
+
+server:
+  port: 8081
