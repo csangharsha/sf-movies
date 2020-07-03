@@ -24,4 +24,6 @@ public interface MovieService {
 
     void delete(String id);
 
+    boolean existsById(String id);
+
 }

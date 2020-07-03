@@ -16,7 +16,7 @@ public class MovieDto {
     private String title;
 
     @ApiModelProperty(notes = "Released Year of the movie")
-    @JsonProperty("released_year")
+    @JsonProperty("release_year")
     private String releasedYear;
 
     @ApiModelProperty(notes = "Latitude of the address where the movie was filmed.")

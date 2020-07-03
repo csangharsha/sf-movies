@@ -13,11 +13,15 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.csangharsha.sf_movies.movies.MovieSequenceIdGenerator.ID_SEPARATOR_DEFAULT;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +38,9 @@ public class MovieResource {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @ApiOperation(
             value = "Create Movie Records",
             notes = "Create a Movie that was filmed in San Francisco",
@@ -48,28 +55,20 @@ public class MovieResource {
             return ResponseEntity.badRequest().build();
         }
 
-        if( StringUtils.isEmpty(dto.getLocations()) ) {
+        Movie entity = cleanseAndSaveMovie(dto);
+        if(entity == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        log.info(dto.toString());
-        Movie entity = movieMapper.toEntity(dto);
-
-        if(entity.getLat() == null || entity.getLon() == null) {
-            GeoCoding geoCoding = GeoCodingUtils.getGeoCodingForLoc(StringUtils.join(entity.getLocations(), ", ", Constant.LOCATION), env.getProperty("apiKey"));
-            if(geoCoding.getGeoCodingResults().length > 0 && geoCoding.getGeoCodingResults()[0].getLocations().size() > 0) {
-                entity.setLat(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLat());
-                entity.setLon(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLng());
-            }else {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
-        entity = movieService.save(entity);
         MovieDto newDto = movieMapper.toDto(entity);
         return ResponseEntity.created(new URI(BASE_URL + "/" + newDto.getId())).body(newDto);
     }
 
+    @ApiOperation(
+            value = "Get All Movie Records",
+            notes = "Get All the Movie that was filmed in San Francisco",
+            response = List.class
+    )
     @GetMapping
     public ResponseEntity<Iterable<MovieDto>> findAll(@RequestParam(name = "page", required = false) Integer page,
                                                @RequestParam(name = "size", required = false) Integer pageSize) {
@@ -82,6 +81,11 @@ public class MovieResource {
         return ResponseEntity.ok().body(dtos);
     }
 
+    @ApiOperation(
+            value = "Get Movie Records By Id",
+            notes = "Get Movie using unique Identifier",
+            response = MovieDto.class
+    )
     @GetMapping("/{id}")
     public ResponseEntity<MovieDto> get(@PathVariable String id) {
         Optional<Movie> result = movieService.findOne(id);
@@ -89,6 +93,11 @@ public class MovieResource {
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @ApiOperation(
+            value = "Update Movie Records By Id",
+            notes = "Update Movie using unique Identifier",
+            response = MovieDto.class
+    )
     @PutMapping("/{id}")
     public ResponseEntity<MovieDto> update(@RequestBody MovieDto dto, @PathVariable String id) {
         if (dto.getId() == null || !dto.getId().equals(id)) {
@@ -109,10 +118,71 @@ public class MovieResource {
         return ResponseEntity.ok().body(newDto);
     }
 
+    @ApiOperation(
+            value = "Delete Movie Records By Id",
+            notes = "Delete Movie using unique Identifier",
+            response = MovieDto.class
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         movieService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation(
+            value = "Import Movie Records",
+            notes = "Import Movie Records from \"https://data.sfgov.org/resource/yitu-d5am.json\""
+    )
+    @PostMapping("/import")
+    public ResponseEntity<Void> importData() {
+        String url = "https://data.sfgov.org/resource/yitu-d5am.json";
+
+        ResponseEntity<MovieDto[]> response = restTemplate.getForEntity(url, MovieDto[].class);
+
+        MovieDto[] dtos = response.getBody();
+
+        for(MovieDto dto: dtos) {
+            String format = "%1$s_%2$s";
+            String id = String.format(format,
+                    StringUtils.replace(
+                            dto.getTitle(), " ", ID_SEPARATOR_DEFAULT
+                    ),
+                    StringUtils.replace(
+                            StringUtils.removeEnd(dto.getLocations(), "."), " ", ID_SEPARATOR_DEFAULT
+                    )
+            );
+
+            if(movieService.existsById(id)) {
+                continue;
+            }
+
+            cleanseAndSaveMovie(dto);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    public Movie cleanseAndSaveMovie(MovieDto dto) {
+        if( StringUtils.isEmpty(dto.getLocations()) ) {
+            return null;
+        }
+
+        log.info(dto.toString());
+        Movie entity = movieMapper.toEntity(dto);
+
+        if(entity.getLat() == null || entity.getLon() == null) {
+            GeoCoding geoCoding = GeoCodingUtils.getGeoCodingForLoc(StringUtils.join(entity.getLocations(), ", ", Constant.LOCATION), env.getProperty("apiKey"));
+            if(geoCoding.getGeoCodingResults().length > 0 && geoCoding.getGeoCodingResults()[0].getLocations().size() > 0) {
+                entity.setLat(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLat());
+                entity.setLon(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLng());
+            }else {
+                return null;
+            }
+        }
+
+        entity = movieService.save(entity);
+
+        return entity;
     }
 
 }

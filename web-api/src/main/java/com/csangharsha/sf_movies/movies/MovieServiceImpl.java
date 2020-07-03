@@ -58,4 +58,9 @@ public class MovieServiceImpl implements MovieService {
     public void delete(String id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(String id) {
+        return repository.existsById(id);
+    }
 }
