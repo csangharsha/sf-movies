@@ -15,5 +15,7 @@ server:
   port: 8081
 
 app:
+  jwtSecret: bF0YjzmpxrgIeCvJ9ZqyxD3aIN7moi6toDA8pT6yMMetHAuxr54R2MlwE9yHPiGpzYrGd9zdAKecQIu7J1WkEg
+  jwtExpirationInMs: 86400000
   basePackage: "com.csangharsha.sf_movies"
   basePath: "/api.*"

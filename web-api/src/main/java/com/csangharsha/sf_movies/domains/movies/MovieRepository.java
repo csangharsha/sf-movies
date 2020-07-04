@@ -1,4 +1,4 @@
-package com.csangharsha.sf_movies.movies;
+package com.csangharsha.sf_movies.domains.movies;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

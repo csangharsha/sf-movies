@@ -1,4 +1,4 @@
-package com.csangharsha.sf_movies.movies;
+package com.csangharsha.sf_movies.domains.movies;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

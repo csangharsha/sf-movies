@@ -1,4 +1,4 @@
-package com.csangharsha.sf_movies.movies;
+package com.csangharsha.sf_movies.domains.movies;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movie_seq")
     @GenericGenerator(
             name = "movie_seq",
-            strategy = "com.csangharsha.sf_movies.movies.MovieSequenceIdGenerator",
+            strategy = "com.csangharsha.sf_movies.domains.movies.MovieSequenceIdGenerator",
             parameters = {
                     @Parameter(name = MovieSequenceIdGenerator.ID_SEPARATOR_PARAMETER, value = "_")
             }

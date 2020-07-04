@@ -1,4 +1,4 @@
-package com.csangharsha.sf_movies.movies;
+package com.csangharsha.sf_movies.domains.movies;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;

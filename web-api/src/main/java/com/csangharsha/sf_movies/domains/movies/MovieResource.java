@@ -1,4 +1,4 @@
-package com.csangharsha.sf_movies.movies;
+package com.csangharsha.sf_movies.domains.movies;
 
 import com.csangharsha.sf_movies.utils.Constant;
 import com.csangharsha.sf_movies.utils.geocoding.GeoCoding;
@@ -17,11 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.csangharsha.sf_movies.movies.MovieSequenceIdGenerator.ID_SEPARATOR_DEFAULT;
+import static com.csangharsha.sf_movies.domains.movies.MovieSequenceIdGenerator.ID_SEPARATOR_DEFAULT;
 
 @Slf4j
 @RequiredArgsConstructor
