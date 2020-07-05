@@ -3,6 +3,7 @@ package com.csangharsha.sf_movies.domains.movies;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +48,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Optional<Movie> findOne(String id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public List<Movie> search(String title) {
+        return repository.findAllByTitleContaining(title);
     }
 
     @Override

@@ -40,6 +40,7 @@ public class MovieResource {
     @Autowired
     private RestTemplate restTemplate;
 
+
     @ApiOperation(
             value = "Create Movie Records",
             notes = "Create a Movie that was filmed in San Francisco",
@@ -63,6 +64,7 @@ public class MovieResource {
         return ResponseEntity.created(new URI(BASE_URL + "/" + newDto.getId())).body(newDto);
     }
 
+
     @ApiOperation(
             value = "Get All Movie Records",
             notes = "Get All the Movie that was filmed in San Francisco",
@@ -80,6 +82,7 @@ public class MovieResource {
         return ResponseEntity.ok().body(dtos);
     }
 
+
     @ApiOperation(
             value = "Get Movie Records By Id",
             notes = "Get Movie using unique Identifier",
@@ -91,6 +94,18 @@ public class MovieResource {
         return result.map(r -> ResponseEntity.ok().body(movieMapper.toDto(r))).
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
+    @ApiOperation(
+            value = "Search Movie Using title",
+            notes = "Search Movie Using title",
+            response = List.class
+    )
+    @GetMapping("/search")
+    public ResponseEntity<List<MovieDto>> searchByMovieTitle(@RequestParam("keyword") String keyword){
+        return ResponseEntity.ok(movieMapper.toDto(movieService.search(keyword)));
+    }
+
 
     @ApiOperation(
             value = "Update Movie Records By Id",
@@ -117,6 +132,7 @@ public class MovieResource {
         return ResponseEntity.ok().body(newDto);
     }
 
+
     @ApiOperation(
             value = "Delete Movie Records By Id",
             notes = "Delete Movie using unique Identifier",
@@ -127,6 +143,7 @@ public class MovieResource {
         movieService.delete(id);
         return ResponseEntity.ok().build();
     }
+
 
     @ApiOperation(
             value = "Import Movie Records",
@@ -160,6 +177,7 @@ public class MovieResource {
 
         return ResponseEntity.ok().build();
     }
+
 
     public Movie cleanseAndSaveMovie(MovieDto dto) {
         if( StringUtils.isEmpty(dto.getLocations()) ) {
