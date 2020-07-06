@@ -43,4 +43,8 @@ web-app/dist
 web-app/package-lock.json
 
 
+moviesdb.mv.db
+moviesdb.trace.db
+
+
 **/.DS_Store

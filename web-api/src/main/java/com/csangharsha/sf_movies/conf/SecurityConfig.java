@@ -57,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and()
+                .headers().frameOptions().sameOrigin()
+                .and()
                 .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
@@ -84,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/movies/{\\[\\s\\S]*}").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/movies/search").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/h2-console").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
