@@ -1,5 +1,7 @@
 package com.csangharsha.sf_movies.domains.movies;
 
+import com.csangharsha.sf_movies.exceptions.BadRequestException;
+import com.csangharsha.sf_movies.exceptions.ResourceNotFoundException;
 import com.csangharsha.sf_movies.utils.Constant;
 import com.csangharsha.sf_movies.utils.geocoding.GeoCoding;
 import com.csangharsha.sf_movies.utils.geocoding.GeoCodingUtils;
@@ -52,12 +54,12 @@ public class MovieResource {
             @RequestBody MovieDto dto
     ) throws URISyntaxException {
         if (dto.getId() != null) {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Id must be null to create movie.");
         }
 
         Movie entity = cleanseAndSaveMovie(dto);
         if(entity == null) {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Location cannot be found in the map.");
         }
 
         MovieDto newDto = movieMapper.toDto(entity);
@@ -92,7 +94,7 @@ public class MovieResource {
     public ResponseEntity<MovieDto> get(@PathVariable String id) {
         Optional<Movie> result = movieService.findOne(id);
         return result.map(r -> ResponseEntity.ok().body(movieMapper.toDto(r))).
-                orElseGet(() -> ResponseEntity.notFound().build());
+                orElseThrow(() -> new ResourceNotFoundException(String.format("Movie with id %1$s not found", id)));
     }
 
 
@@ -115,15 +117,15 @@ public class MovieResource {
     @PutMapping("/{id}")
     public ResponseEntity<MovieDto> update(@RequestBody MovieDto dto, @PathVariable String id) {
         if (dto.getId() == null || !dto.getId().equals(id)) {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("ID is either null or doesn't match with url's.");
         }
 
         if( StringUtils.isEmpty(dto.getLocations()) ) {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Location cannot be null or empty.");
         }
 
         if(dto.getLat() == null || dto.getLon() == null) {
-            return ResponseEntity.badRequest().build();
+            throw new BadRequestException("Latitude and Longitude cannot be null.");
         }
 
         Movie entity = movieMapper.toEntity(dto);

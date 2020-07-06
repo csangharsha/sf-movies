@@ -5,6 +5,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/sf_movies?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8
     username: root
-    password: ENC(mpczRSuXPE68kTDpGo+QyQ==)
+    password: root
 client:
   url: "http://localhost:3000"
