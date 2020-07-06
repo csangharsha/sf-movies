@@ -1,0 +1,11 @@
+.searchbar-container {
+    width: 20%;
+    min-width: 400px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    margin: 25px;
+    overflow-y:hidden;
+    height: 90vh;
+    z-index: 100;
+}
