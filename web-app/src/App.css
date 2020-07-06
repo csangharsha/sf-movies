@@ -21,3 +21,12 @@ a {
 .App {
     height: 100vh;
 }
+
+. search-bar {
+    z-index: 10000000;
+}
+
+.search-bar {
+    background: transparent;
+    z-index: 1000;
+}

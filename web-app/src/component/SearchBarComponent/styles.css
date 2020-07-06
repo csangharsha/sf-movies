@@ -7,5 +7,5 @@
     margin: 25px;
     overflow-y:hidden;
     height: 90vh;
-    z-index: 100;
+    z-index: 1000000;
 }

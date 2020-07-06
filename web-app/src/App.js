@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import SearchBarComponent from "./component/SearchBarComponent";
+import MapComponent from "./component/MapComponent";
 
 class App extends Component {
 
@@ -36,22 +37,22 @@ class App extends Component {
     }
 
     onMovieItemClicked = (value) => {
-        this.setState({ electedMovie: value });
+        this.setState({ selectedMovie: value });
     }
 
     render() {
         return (
             <div className="App">
                 <div className={'App'}>
-                    <div className={'map'}>
-
-                    </div>
-                    <div>
+                    <div className={'search-bar'}>
                         <SearchBarComponent
                             searchKeyword={this.state.searchKeyword}
                             movies={this.state.movies}
                             onValueChanged={this.onValueChanged}
                             onMovieItemClicked={this.onMovieItemClicked}/>
+                    </div>
+                    <div className={'map'}>
+                        <MapComponent zoom={5} movie={this.state.selectedMovie} />
                     </div>
                 </div>
             </div>

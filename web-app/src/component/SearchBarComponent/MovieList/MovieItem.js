@@ -6,7 +6,7 @@ class MovieItem extends Component {
         const {movie} = this.props;
         return (
             <div>
-                <div onClick={() => this.props.onMovieItemClicked(movie)} className='list-group-item' style={{marginBottom: '10px'}}>
+                <div onClick={() => this.props.onMovieItemClicked(movie)} className='list-group-item' style={{marginBottom: '10px', cursor: 'pointer'}}>
                     <h4>{movie.title}</h4>
                     <div><strong>{'Location: '}</strong>{movie.locations}</div>
                     <div><strong>{'Release Year : '}</strong>{movie.release_year}</div>
