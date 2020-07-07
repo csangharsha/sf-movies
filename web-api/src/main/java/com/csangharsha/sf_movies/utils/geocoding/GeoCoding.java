@@ -10,7 +10,13 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class GeoCoding {
 
-    @JsonProperty(value="results")
-    GeoCodingResult[] geoCodingResults;
+    @JsonProperty(value="lat")
+    private Double lat;
+
+    @JsonProperty(value="lon")
+    private Double lon;
+
+    @JsonProperty(value="display_name")
+    private String displayName;
 
 }

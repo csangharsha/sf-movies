@@ -191,9 +191,10 @@ public class MovieResource {
 
         if(entity.getLat() == null || entity.getLon() == null) {
             GeoCoding geoCoding = GeoCodingUtils.getGeoCodingForLoc(StringUtils.join(entity.getLocations(), ", ", Constant.LOCATION), env.getProperty("apiKey"));
-            if(geoCoding.getGeoCodingResults().length > 0 && geoCoding.getGeoCodingResults()[0].getLocations().size() > 0) {
-                entity.setLat(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLat());
-                entity.setLon(geoCoding.getGeoCodingResults()[0].getLocations().get(0).getLatLng().getLng());
+            if(geoCoding != null) {
+                entity.setLat(geoCoding.getLat());
+                entity.setLon(geoCoding.getLon());
+                entity.setDisplayLocation(geoCoding.getDisplayName());
             }else {
                 return null;
             }

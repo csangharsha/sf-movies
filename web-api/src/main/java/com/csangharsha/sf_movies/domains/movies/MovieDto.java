@@ -28,6 +28,9 @@ public class MovieDto {
     @ApiModelProperty(notes = "Address where the movie was filmed.", required = true)
     private String locations;
 
+    @ApiModelProperty(notes = "Address (from map) where the movie was filmed.", required = true)
+    private String displayLocation;
+
     @ApiModelProperty(notes = "Company that produced the movie.")
     @JsonProperty("production_company")
     private String productionCompany;

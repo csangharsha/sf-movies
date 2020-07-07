@@ -31,4 +31,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2-bank" author="sangharsha">
+        <addColumn tableName="movies">
+            <column name="display_location" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

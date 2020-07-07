@@ -9,24 +9,29 @@ import java.net.URI;
 @Slf4j
 public class GeoCodingUtils {
 
-    private static final String GEOCODING_URI = "http://open.mapquestapi.com/geocoding/v1/address";
+    private static final String GEOCODING_URI = "https://nominatim.openstreetmap.org/search";
 
-    private GeoCoding getGeoCoding(String address, String key) {
+    private GeoCoding[] getGeoCoding(String address, String key) {
         RestTemplate restTemplate = new RestTemplate();
 
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(GEOCODING_URI)
-                .queryParam("location", address)
-                .queryParam("key", key);
+                .queryParam("q", address)
+                .queryParam("format", "json");
         URI uri = builder.build().toUri();
 
         log.info("Calling geocoding api with: " + uri);
-        return restTemplate.getForObject(uri, GeoCoding.class);
+        return restTemplate.getForObject(uri, GeoCoding[].class);
     }
 
     public static GeoCoding getGeoCodingForLoc(String address, String key) {
         GeoCodingUtils geoCodingUtils = new GeoCodingUtils();
-        return geoCodingUtils.getGeoCoding(address, key);
+        GeoCoding[] geoCodings = geoCodingUtils.getGeoCoding(address, key);
+        if(geoCodings.length == 0) {
+            return null;
+        }else {
+            return geoCodings[0];
+        }
     }
 
 }

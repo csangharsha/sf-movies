@@ -39,6 +39,9 @@ public class Movie {
     @Column(name = "locations")
     private String locations;
 
+    @Column(name = "display_location")
+    private String displayLocation;
+
     @Column(name = "production_company")
     private String productionCompany;
 

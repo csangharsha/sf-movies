@@ -52,7 +52,7 @@ class App extends Component {
                             onMovieItemClicked={this.onMovieItemClicked}/>
                     </div>
                     <div className={'map'}>
-                        <MapComponent zoom={5} movie={this.state.selectedMovie} />
+                        <MapComponent zoom={10} movie={this.state.selectedMovie} />
                     </div>
                 </div>
             </div>

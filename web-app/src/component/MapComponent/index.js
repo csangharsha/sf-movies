@@ -7,9 +7,10 @@ class MapComponent extends Component {
 
     render() {
 
-        const center = this.props.center ? this.props.center : [37.770015, -122.446937];
+        let center = this.props.center ? this.props.center : [37.770015, -122.446937];
         const zoom = this.props.zoom ? this.props.zoom : 14;
         const { movie } = this.props;
+        center = movie ? [movie.lat, movie.lon] : center;
         const marker = movie ? (
             <Marker position={[movie.lat, movie.lon]} key={movie.id} >
                 <Popup>
