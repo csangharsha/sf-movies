@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:file:./moviesdb;TRACE_LEVEL_FILE=3
