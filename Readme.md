@@ -1,7 +1,7 @@
-SAGE 
+## SF_MOVIES - SAGE 
 
 ---
-##Description
+## Description
 This service provides the location of movies filmed in San Francisco with interactive maps. 
 Some features of this application are: 
 - List of movies and details
@@ -10,7 +10,7 @@ Some features of this application are:
 
 Mostly this application is focus on backend with some emphasis on frontend.
 
-##Technical choices
+## Technical choices
 - Backend
    - Java, Spring boot, Hibernate, JPA
    - Liquibase (For database migration)
@@ -45,7 +45,7 @@ This application has been deployed in AWS. Links to this application is:
 
 NOTE: Right now, swagger is visible in both profile(dev and prod) for viewing proposes only. 
 
-##Link to Personal Profile
+## Link to Personal Profile
 
 - [GITHUB: csangharsha](https://github.com/csangharsha)
 - [LINKEDIN: s-chaulagain](https://www.linkedin.com/in/s-chaulagain/)
