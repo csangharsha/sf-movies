@@ -70,7 +70,7 @@ public class MovieResource {
     @ApiOperation(
             value = "Get All Movie Records",
             notes = "Get All the Movie that was filmed in San Francisco",
-            response = List.class
+            response = MovieDto[].class
     )
     @GetMapping
     public ResponseEntity<Iterable<MovieDto>> findAll(@RequestParam(name = "page", required = false) Integer page,
@@ -101,7 +101,7 @@ public class MovieResource {
     @ApiOperation(
             value = "Search Movie Using title",
             notes = "Search Movie Using title",
-            response = List.class
+            response = MovieDto[].class
     )
     @GetMapping("/search")
     public ResponseEntity<List<MovieDto>> searchByMovieTitle(@RequestParam("keyword") String keyword){

@@ -22,7 +22,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableSwagger2
-@Profile("dev")
+//@Profile("dev")
 public class SwaggerConfig {
 
     @Value("${app.basePackage}")

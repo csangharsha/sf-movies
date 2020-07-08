@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@Profile("!dev")
+@Profile({"!dev", "!prod"})
 @RestController
 @Slf4j
 public class DisableSwaggerController {
