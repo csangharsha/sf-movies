@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-@Profile({"!dev", "!prod"})
+@Profile({"!dev"})
 @RestController
 @Slf4j
 public class DisableSwaggerController {
 
-    @RequestMapping(value = "/swagger-ui.html", method = RequestMethod.GET)
-    public ResponseEntity<Void> getSwagger() throws IOException {
-        return ResponseEntity.notFound().build();
-    }
+//    @RequestMapping(value = "/swagger-ui.html", method = RequestMethod.GET)
+//    public ResponseEntity<Void> getSwagger() throws IOException {
+//        return ResponseEntity.notFound().build();
+//    }
 
 }
