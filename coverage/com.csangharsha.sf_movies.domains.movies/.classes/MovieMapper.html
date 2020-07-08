@@ -1,0 +1,68 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MovieMapper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.csangharsha.sf_movies.domains.movies</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MovieMapper (com.csangharsha.sf_movies.domains.movies)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MovieMapper</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.csangharsha.sf_movies.domains.movies;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.mapstruct.Mapper;
+<i>4</i>&nbsp;import org.springframework.data.domain.Page;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import java.util.List;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;@Mapper(componentModel = &quot;spring&quot;)
+<i>9</i>&nbsp;public interface MovieMapper {
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    Movie toEntity(MovieDto dto);
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    MovieDto toDto(Movie entity);
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    List&lt;Movie&gt; toEntity(Iterable&lt;MovieDto&gt; dtoList);
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    List&lt;MovieDto&gt; toDto(Iterable&lt;Movie&gt; entityList);
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    List&lt;MovieDto&gt; toDto(Page&lt;Movie&gt; entityList);
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-08 11:34</div>
+</div>
+</body>
+</html>

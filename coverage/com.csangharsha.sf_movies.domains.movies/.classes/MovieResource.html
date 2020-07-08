@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MovieResource</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.csangharsha.sf_movies.domains.movies</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MovieResource (com.csangharsha.sf_movies.domains.movies)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MovieResource</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70%
+  </span>
+  <span class="absValue">
+    (7/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.6%
+  </span>
+  <span class="absValue">
+    (30/ 57)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.csangharsha.sf_movies.domains.movies;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.csangharsha.sf_movies.exceptions.BadRequestException;
+<i>4</i>&nbsp;import com.csangharsha.sf_movies.exceptions.ResourceNotFoundException;
+<i>5</i>&nbsp;import com.csangharsha.sf_movies.utils.Constant;
+<i>6</i>&nbsp;import com.csangharsha.sf_movies.utils.geocoding.GeoCoding;
+<i>7</i>&nbsp;import com.csangharsha.sf_movies.utils.geocoding.GeoCodingUtils;
+<i>8</i>&nbsp;import io.swagger.annotations.ApiOperation;
+<i>9</i>&nbsp;import io.swagger.annotations.ApiParam;
+<i>10</i>&nbsp;import lombok.RequiredArgsConstructor;
+<i>11</i>&nbsp;import lombok.extern.slf4j.Slf4j;
+<i>12</i>&nbsp;import org.apache.commons.lang3.StringUtils;
+<i>13</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>14</i>&nbsp;import org.springframework.core.env.Environment;
+<i>15</i>&nbsp;import org.springframework.data.domain.PageRequest;
+<i>16</i>&nbsp;import org.springframework.http.ResponseEntity;
+<i>17</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i>18</i>&nbsp;import org.springframework.web.client.RestTemplate;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import java.net.URI;
+<i>21</i>&nbsp;import java.net.URISyntaxException;
+<i>22</i>&nbsp;import java.util.List;
+<i>23</i>&nbsp;import java.util.Optional;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;import static com.csangharsha.sf_movies.domains.movies.MovieSequenceIdGenerator.ID_SEPARATOR_DEFAULT;
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;@Slf4j</b>
+<b class="fc"><i>28</i>&nbsp;@RequiredArgsConstructor</b>
+<i>29</i>&nbsp;@RestController
+<i>30</i>&nbsp;@RequestMapping(Constant.BASE_URL + MovieResource.BASE_URL)
+<i>31</i>&nbsp;public class MovieResource {
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public static final String BASE_URL = &quot;/movies&quot;;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private final MovieService movieService;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private final MovieMapper movieMapper;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    @Autowired
+<i>40</i>&nbsp;    private Environment env;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Autowired
+<i>43</i>&nbsp;    private RestTemplate restTemplate;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    @ApiOperation(
+<i>47</i>&nbsp;            value = &quot;Create Movie Records&quot;,
+<i>48</i>&nbsp;            notes = &quot;Create a Movie that was filmed in San Francisco&quot;,
+<i>49</i>&nbsp;            response = MovieDto.class
+<i>50</i>&nbsp;    )
+<i>51</i>&nbsp;    @PostMapping
+<i>52</i>&nbsp;    public ResponseEntity&lt;MovieDto&gt; create(
+<i>53</i>&nbsp;            @ApiParam(value = &quot;Movie Atrributes that needs to be inserted. Dont send id attribute. Also locations is required and should not be null.&quot;, required = true)
+<i>54</i>&nbsp;            @RequestBody MovieDto dto
+<i>55</i>&nbsp;    ) throws URISyntaxException {
+<b class="fc"><i>56</i>&nbsp;        if (dto.getId() != null) {</b>
+<b class="fc"><i>57</i>&nbsp;            throw new BadRequestException(&quot;Id must be null to create movie.&quot;);</b>
+<i>58</i>&nbsp;        }
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;        Movie entity = cleanseAndSaveMovie(dto);</b>
+<b class="fc"><i>61</i>&nbsp;        if(entity == null) {</b>
+<b class="fc"><i>62</i>&nbsp;            throw new BadRequestException(&quot;Location cannot be found in the map.&quot;);</b>
+<i>63</i>&nbsp;        }
+<i>64</i>&nbsp;
+<b class="fc"><i>65</i>&nbsp;        MovieDto newDto = movieMapper.toDto(entity);</b>
+<b class="fc"><i>66</i>&nbsp;        return ResponseEntity.created(new URI(BASE_URL + &quot;/&quot; + newDto.getId())).body(newDto);</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    @ApiOperation(
+<i>71</i>&nbsp;            value = &quot;Get All Movie Records&quot;,
+<i>72</i>&nbsp;            notes = &quot;Get All the Movie that was filmed in San Francisco&quot;,
+<i>73</i>&nbsp;            response = List.class
+<i>74</i>&nbsp;    )
+<i>75</i>&nbsp;    @GetMapping
+<i>76</i>&nbsp;    public ResponseEntity&lt;Iterable&lt;MovieDto&gt;&gt; findAll(@RequestParam(name = &quot;page&quot;, required = false) Integer page,
+<i>77</i>&nbsp;                                               @RequestParam(name = &quot;size&quot;, required = false) Integer pageSize) {
+<i>78</i>&nbsp;        List&lt;MovieDto&gt; dtos;
+<b class="nc"><i>79</i>&nbsp;        if (page != null &amp;&amp; pageSize != null) {</b>
+<b class="nc"><i>80</i>&nbsp;            dtos = movieMapper.toDto(movieService.findAll(PageRequest.of(page, pageSize)).getContent());</b>
+<b class="nc"><i>81</i>&nbsp;            return ResponseEntity.ok().body(dtos);</b>
+<i>82</i>&nbsp;        }
+<b class="nc"><i>83</i>&nbsp;        dtos = movieMapper.toDto(movieService.findAll());</b>
+<b class="nc"><i>84</i>&nbsp;        return ResponseEntity.ok().body(dtos);</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    @ApiOperation(
+<i>89</i>&nbsp;            value = &quot;Get Movie Records By Id&quot;,
+<i>90</i>&nbsp;            notes = &quot;Get Movie using unique Identifier&quot;,
+<i>91</i>&nbsp;            response = MovieDto.class
+<i>92</i>&nbsp;    )
+<i>93</i>&nbsp;    @GetMapping(&quot;/{id}&quot;)
+<i>94</i>&nbsp;    public ResponseEntity&lt;MovieDto&gt; get(@PathVariable String id) {
+<b class="fc"><i>95</i>&nbsp;        Optional&lt;Movie&gt; result = movieService.findOne(id);</b>
+<b class="fc"><i>96</i>&nbsp;        return result.map(r -&gt; ResponseEntity.ok().body(movieMapper.toDto(r))).</b>
+<b class="fc"><i>97</i>&nbsp;                orElseThrow(() -&gt; new ResourceNotFoundException(String.format(&quot;Movie with id %1$s not found&quot;, id)));</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    @ApiOperation(
+<i>102</i>&nbsp;            value = &quot;Search Movie Using title&quot;,
+<i>103</i>&nbsp;            notes = &quot;Search Movie Using title&quot;,
+<i>104</i>&nbsp;            response = List.class
+<i>105</i>&nbsp;    )
+<i>106</i>&nbsp;    @GetMapping(&quot;/search&quot;)
+<i>107</i>&nbsp;    public ResponseEntity&lt;List&lt;MovieDto&gt;&gt; searchByMovieTitle(@RequestParam(&quot;keyword&quot;) String keyword){
+<b class="fc"><i>108</i>&nbsp;        return ResponseEntity.ok(movieMapper.toDto(movieService.search(keyword)));</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    @ApiOperation(
+<i>113</i>&nbsp;            value = &quot;Update Movie Records By Id&quot;,
+<i>114</i>&nbsp;            notes = &quot;Update Movie using unique Identifier&quot;,
+<i>115</i>&nbsp;            response = MovieDto.class
+<i>116</i>&nbsp;    )
+<i>117</i>&nbsp;    @PutMapping(&quot;/{id}&quot;)
+<i>118</i>&nbsp;    public ResponseEntity&lt;MovieDto&gt; update(@RequestBody MovieDto dto, @PathVariable String id) {
+<b class="fc"><i>119</i>&nbsp;        if (dto.getId() == null || !dto.getId().equals(id)) {</b>
+<b class="fc"><i>120</i>&nbsp;            throw new BadRequestException(&quot;ID is either null or doesn&#39;t match with url&#39;s.&quot;);</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<b class="fc"><i>123</i>&nbsp;        if( StringUtils.isEmpty(dto.getLocations()) ) {</b>
+<b class="fc"><i>124</i>&nbsp;            throw new BadRequestException(&quot;Location cannot be null or empty.&quot;);</b>
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;
+<b class="fc"><i>127</i>&nbsp;        if(dto.getLat() == null || dto.getLon() == null) {</b>
+<b class="fc"><i>128</i>&nbsp;            throw new BadRequestException(&quot;Latitude and Longitude cannot be null.&quot;);</b>
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<b class="fc"><i>131</i>&nbsp;        Movie entity = movieMapper.toEntity(dto);</b>
+<b class="fc"><i>132</i>&nbsp;        entity = movieService.update(entity);</b>
+<b class="fc"><i>133</i>&nbsp;        MovieDto newDto = movieMapper.toDto(entity);</b>
+<b class="fc"><i>134</i>&nbsp;        return ResponseEntity.ok().body(newDto);</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    @ApiOperation(
+<i>139</i>&nbsp;            value = &quot;Delete Movie Records By Id&quot;,
+<i>140</i>&nbsp;            notes = &quot;Delete Movie using unique Identifier&quot;,
+<i>141</i>&nbsp;            response = MovieDto.class
+<i>142</i>&nbsp;    )
+<i>143</i>&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+<i>144</i>&nbsp;    public ResponseEntity&lt;Void&gt; delete(@PathVariable String id) {
+<b class="nc"><i>145</i>&nbsp;        movieService.delete(id);</b>
+<b class="nc"><i>146</i>&nbsp;        return ResponseEntity.ok().build();</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    @ApiOperation(
+<i>151</i>&nbsp;            value = &quot;Import Movie Records&quot;,
+<i>152</i>&nbsp;            notes = &quot;Import Movie Records from \&quot;https://data.sfgov.org/resource/yitu-d5am.json\&quot;&quot;
+<i>153</i>&nbsp;    )
+<i>154</i>&nbsp;    @PostMapping(&quot;/import&quot;)
+<i>155</i>&nbsp;    public ResponseEntity&lt;Void&gt; importData() {
+<b class="nc"><i>156</i>&nbsp;        String url = &quot;https://data.sfgov.org/resource/yitu-d5am.json&quot;;</b>
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;        ResponseEntity&lt;MovieDto[]&gt; response = restTemplate.getForEntity(url, MovieDto[].class);</b>
+<i>159</i>&nbsp;
+<b class="nc"><i>160</i>&nbsp;        MovieDto[] dtos = response.getBody();</b>
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;        for(MovieDto dto: dtos) {</b>
+<b class="nc"><i>163</i>&nbsp;            String format = &quot;%1$s_%2$s&quot;;</b>
+<b class="nc"><i>164</i>&nbsp;            String id = String.format(format,</b>
+<b class="nc"><i>165</i>&nbsp;                    StringUtils.replace(</b>
+<b class="nc"><i>166</i>&nbsp;                            dto.getTitle(), &quot; &quot;, ID_SEPARATOR_DEFAULT</b>
+<i>167</i>&nbsp;                    ),
+<b class="nc"><i>168</i>&nbsp;                    StringUtils.replace(</b>
+<b class="nc"><i>169</i>&nbsp;                            StringUtils.removeEnd(dto.getLocations(), &quot;.&quot;), &quot; &quot;, ID_SEPARATOR_DEFAULT</b>
+<i>170</i>&nbsp;                    )
+<i>171</i>&nbsp;            );
+<i>172</i>&nbsp;
+<b class="nc"><i>173</i>&nbsp;            if(movieService.existsById(id)) {</b>
+<b class="nc"><i>174</i>&nbsp;                continue;</b>
+<i>175</i>&nbsp;            }
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;            cleanseAndSaveMovie(dto);</b>
+<i>178</i>&nbsp;        }
+<i>179</i>&nbsp;
+<b class="nc"><i>180</i>&nbsp;        return ResponseEntity.ok().build();</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    public Movie cleanseAndSaveMovie(MovieDto dto) {
+<b class="fc"><i>185</i>&nbsp;        if( StringUtils.isEmpty(dto.getLocations()) ) {</b>
+<b class="fc"><i>186</i>&nbsp;            return null;</b>
+<i>187</i>&nbsp;        }
+<i>188</i>&nbsp;
+<b class="fc"><i>189</i>&nbsp;        log.info(dto.toString());</b>
+<b class="fc"><i>190</i>&nbsp;        Movie entity = movieMapper.toEntity(dto);</b>
+<i>191</i>&nbsp;
+<b class="fc"><i>192</i>&nbsp;        if(entity.getLat() == null || entity.getLon() == null) {</b>
+<b class="nc"><i>193</i>&nbsp;            GeoCoding geoCoding = GeoCodingUtils.getGeoCodingForLoc(StringUtils.join(entity.getLocations(), &quot;, &quot;, Constant.LOCATION), env.getProperty(&quot;apiKey&quot;));</b>
+<b class="nc"><i>194</i>&nbsp;            if(geoCoding != null) {</b>
+<b class="nc"><i>195</i>&nbsp;                entity.setLat(geoCoding.getLat());</b>
+<b class="nc"><i>196</i>&nbsp;                entity.setLon(geoCoding.getLon());</b>
+<b class="nc"><i>197</i>&nbsp;                entity.setDisplayLocation(geoCoding.getDisplayName());</b>
+<i>198</i>&nbsp;            }else {
+<b class="nc"><i>199</i>&nbsp;                return null;</b>
+<i>200</i>&nbsp;            }
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<b class="fc"><i>203</i>&nbsp;        entity = movieService.save(entity);</b>
+<i>204</i>&nbsp;
+<b class="fc"><i>205</i>&nbsp;        return entity;</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-08 11:34</div>
+</div>
+</body>
+</html>
