@@ -14,6 +14,7 @@ import java.io.IOException;
 @Slf4j
 public class DisableSwaggerController {
 
+    // UNCOMMENT IF SWAGGER IS TO BE DISBALED FOR PRODUCTION PROFILE
 //    @RequestMapping(value = "/swagger-ui.html", method = RequestMethod.GET)
 //    public ResponseEntity<Void> getSwagger() throws IOException {
 //        return ResponseEntity.notFound().build();
