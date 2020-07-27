@@ -44,6 +44,8 @@ This application has been deployed in AWS. Links to this application is:
 
 NOTE: Right now, swagger is visible in both profile(dev and prod) for viewing proposes only. 
 
+<p style="color:red"><strong>NOTE: EC2 services has been stopped. so above links will not work.</strong></p>
+
 ## Link to Personal Profile
 
 - [GITHUB: csangharsha](https://github.com/csangharsha)
